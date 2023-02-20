@@ -132,6 +132,34 @@
         this.classList.toggle("active");
         });
     });
-    </script>
+	const accessToken = '910263630116395|ARnT51Er18zr4YEKDP-SGHtM2fQ';
+	const hashtag = 'dog';
+	const recentHashtagsUrl = `https://graph.instagram.com/v12.0/ig_hashtag_search?user_id=me&q=${hashtag}&access_token=${accessToken}`;
+	fetch(recentHashtagsUrl)
+	.then(response => response.json())
+	.then(data => {
+		const matchingHashtags = data.data.filter(hashtagObj => hashtagObj.name === hashtag);
+		if (matchingHashtags.length > 0) {
+		const hashtagId = matchingHashtags[0].id;
+		const hashtagMediaUrl = `https://graph.instagram.com/v12.0/${hashtagId}/recent_media?fields=id,caption,media_type,media_url,thumbnail_url,permalink&access_token=${accessToken}`;
+
+		fetch(hashtagMediaUrl)
+			.then(response => response.json())
+			.then(data => {
+			const posts = data.data.filter(post => {
+				// Filter out posts older than 24 hours
+				const postTimestamp = new Date(post.timestamp).getTime();
+				const nowTimestamp = new Date().getTime();
+				return (nowTimestamp - postTimestamp) < (24 * 60 * 60 * 1000);
+			});
+			posts.forEach(post => {
+				console.log(post.media_url); // logs the URL of the post's image or video
+			});
+			})
+			.catch(error => console.error(error));
+		}
+	})
+	.catch(error => console.error(error));
+	</script>
 </body>
 </html>
