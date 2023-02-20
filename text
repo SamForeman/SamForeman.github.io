@@ -1,0 +1,75 @@
+        // Create a vector layer with country polygons
+        var vectorLayer = new ol.layer.Vector({
+          source: new ol.source.Vector({
+            url: 'https://openlayers.org/en/v3.20.1/examples/data/geojson/countries.geojson',
+            format: new ol.format.GeoJSON()
+          }),
+          style: new ol.style.Style({
+            stroke: new ol.style.Stroke({
+              color: 'black',
+              width: 1
+            }),
+            fill: new ol.style.Fill({
+              color: [255, 255, 255, 0.6]
+            })
+          })
+        });
+
+        // Add the vector layer to the map
+        map.addLayer(vectorLayer);
+
+        // Create the overlay
+        var overlay = new ol.Overlay({
+          element: document.getElementById('popup'),
+          autoPan: true,
+          autoPanAnimation: {
+            duration: 250
+          }
+        });
+
+        // Add the overlay to the map
+        map.addOverlay(overlay);
+
+        // Add a click event listener to the vector layer
+        map.on('click', function(event) {
+          map.forEachFeatureAtPixel(event.pixel, function(feature) {
+            // Do something with the clicked feature (country)
+            var countryName = feature.get('name');
+            var coordinate = event.coordinate;
+            var element = overlay.getElement();
+            element.innerHTML = '<div>' + countryName + '</div>';
+            overlay.setPosition(coordinate);
+          });
+        });
+                // Create the popup
+        var popup = new ol.Overlay({
+          element: document.createElement('div'),
+          autoPan: true,
+          autoPanAnimation: {
+            duration: 250
+          }
+        });
+
+        // Add content and styling to the popup element
+        var popupContent = document.createElement('div');
+        popupContent.className = 'popup';
+        popupContent.innerHTML = '<h3>Country Name</h3><p>Population: 123456</p>';
+        popup.setElement(popupContent);
+
+        map.addOverlay(popup);
+
+        // Add a click event listener to the vector layer
+        map.on('click', function(event) {
+          map.forEachFeatureAtPixel(event.pixel, function(feature) {
+            // Get information about the clicked feature (country)
+            var countryName = feature.get('name');
+            var population = feature.get('pop_est');
+
+            // Update the content of the popup element with information about the clicked feature
+            popupContent.innerHTML = '<h3>' + countryName + '</h3><p>Population: ' + population + '</p>';
+
+            // Position and display the popup
+            var coordinate = event.coordinate;
+            popup.setPosition(coordinate);
+          });
+        });
