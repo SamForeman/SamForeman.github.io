@@ -42,7 +42,7 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
 <div class="topnav">
         <a class="active" href="dashboard.php">Home</a>
         <a href="map.html">Tracking Information</a>
-        <a href="customers.php">Customer Information</a>
+        <a href="customers.html">Customer Information</a>
         <a href="products.php">Product Information</a>
         <a href="login.php">Login</a>
         <a href="register.php">Register</a>
